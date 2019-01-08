@@ -1,0 +1,20 @@
+@charset "utf-8";
+@import "~bulma/bulma.sass";
+
+.grapharea {
+    margin: 0 auto;
+    height: 500px;
+}
+
+.dropzone {
+    border: dashed 1px #a4a4a4;
+    min-height: 25px;
+    padding: 20px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.dropzone.dropover {
+    background-color: #f0f0f0;
+    color: rgb(150, 150, 150);
+}
