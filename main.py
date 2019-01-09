@@ -11,7 +11,7 @@ from breakthroughdata import BreakthroughData
 ALLOWED_EXTENSIONS = set(['txt', 'dat'])
 
 app = Flask(__name__, static_folder="public/static", template_folder="public")
-breakthrogh_data = BreakthroughData()
+breakthrough_data = BreakthroughData()
 
 @app.route("/")
 def index():
@@ -32,7 +32,7 @@ def allowed_file(filename):
     # eg. filename.rsplit('.', 1) -> ['hoge', 'txt']
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route("/adddata", methods=["POST"])
+@app.route("/add-data", methods=["POST"])
 def add_data():
     keys = []
     for key in request.files:
@@ -44,11 +44,11 @@ def add_data():
             data_dict = read_data_from(file)
 
             # add datum to breakthrough_data
-            breakthrogh_data.add_data(**data_dict)
+            breakthrough_data.add_data(**data_dict)
             add_num += 1
 
     # make json for plotly
-    response = breakthrogh_data.get_json_both_time_pos(add_num)
+    response = breakthrough_data.get_json_both_time_pos(add_num)
     response = jsonify(response)
 
     return response
@@ -76,6 +76,23 @@ def read_data_from(file):
         "main_array": main_array
     }
     return return_dictionary
+
+@app.route("/get-plot-data", methods=["POST"])
+def send_plot_data():
+    # make json for plotly
+    response = breakthrough_data.get_json_both_time_pos()
+    response = jsonify(response)
+
+    return response
+
+@app.route("/remove-datum", methods=["POST"])
+def remove_datum():
+    data_id = int(request.data)
+    breakthrough_data.remove_datum(data_id)
+    response = breakthrough_data.get_json_both_time_pos()
+    response = jsonify(response)
+
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)

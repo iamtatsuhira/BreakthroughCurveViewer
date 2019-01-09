@@ -1,3 +1,5 @@
 import './index.scss'
-import './graph'
 import './draganddrop'
+import {reloadingGraphs} from './graph'
+
+reloadingGraphs()

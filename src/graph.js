@@ -45,7 +45,7 @@ class Layout {
             },
             margin: {
                 l: 85,
-                r: 5,
+                r: 40,
                 b: 60,
                 t: 30,
                 pad: 0
@@ -132,7 +132,7 @@ const layoutPosGraph = new Layout()
 layoutPosGraph.setTitle('position [m]')
 
 
-export const drawingNewGraphs = (plotlyDataTime, plotlyDataPos, idTime, idPos) => {
+const drawingNewGraphs = (plotlyDataTime, plotlyDataPos, idTime, idPos) => {
         
     const dataListTime = []    
     for (const datum of plotlyDataTime) {
@@ -151,4 +151,120 @@ export const drawingNewGraphs = (plotlyDataTime, plotlyDataPos, idTime, idPos) =
     Plotly.react(idTime, dataListTime, layoutTimeGraph.layout, layoutTimeGraph.option)
     Plotly.react(idPos, dataListPos, layoutPosGraph.layout, layoutPosGraph.option)
     
+}
+
+export const reloadingGraphs = () => {
+    const request = new XMLHttpRequest()
+    request.open('POST', '/get-plot-data', false) // falseで同期通信
+
+    let graphJson
+    request.onload = () => {
+        if (request.status >= 200 && request.status < 400) {
+            // success!
+            graphJson = JSON.parse(JSON.parse(request.response))
+            const dataTimeVsVarList = graphJson[0]
+            const dataPosVsVarList = graphJson[1]
+
+            if (dataTimeVsVarList.length === dataPosVsVarList.length) {
+                for (let i=0;i<dataTimeVsVarList.length;i++){
+                    createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
+                }
+            } else {
+                console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
+            }
+        }
+        else {
+            // We reached our target server, but it returned an error
+            console.error('we reached our target server, but it returned an error!')
+        }
+    }
+    request.onerror = () => {
+        // There was a conection error of some sort
+        console.error('There was a conection error of some sort')
+    }
+
+    request.send(null)
+}
+
+export const createNewGraphDOM = (plotlyDataTime, plotlyDataPos) => {
+    const graphFieldDiv = document.getElementById('main-graph-field')
+    const childElementNum = graphFieldDiv.childElementCount
+    const idTime = 'graph-t-' + (childElementNum + 1)
+    const idPos = 'graph-z-' + (childElementNum + 1)
+    const idDeleteBtn = `${childElementNum}`
+
+    const newDeleteButton = document.createElement('button')
+    newDeleteButton.classList.add('delete', 'is-medium')
+    newDeleteButton.setAttribute('title', "remove these graphs")
+    newDeleteButton.setAttribute('name', 'delete-btn')
+    newDeleteButton.setAttribute('value', idDeleteBtn)
+    newDeleteButton.addEventListener('click', () => {removeGraph(idDeleteBtn)})
+
+    const newGraphField = document.createElement('div')
+    newGraphField.classList.add('graph-field')
+
+    const newColumnsDiv = document.createElement('div')
+    newColumnsDiv.classList.add('columns')
+
+    const newColumnTDiv = document.createElement('div')
+    newColumnTDiv.classList.add('column')
+    const newGraphAreaTDiv = document.createElement('div')
+    newGraphAreaTDiv.classList.add('graph-area')
+    newGraphAreaTDiv.setAttribute('id', idTime)
+
+    const newColumnZDiv = document.createElement('div')
+    newColumnZDiv.classList.add('column')
+    const newGraphAreaZDiv = document.createElement('div')
+    newGraphAreaZDiv.classList.add('graph-area')
+    newGraphAreaZDiv.setAttribute('id', idPos)
+
+    graphFieldDiv.appendChild(newGraphField)
+    newGraphField.appendChild(newDeleteButton)
+    newGraphField.appendChild(newColumnsDiv)
+    newColumnsDiv.appendChild(newColumnTDiv)
+    newColumnTDiv.appendChild(newGraphAreaTDiv)
+    newColumnsDiv.appendChild(newColumnZDiv)
+    newColumnZDiv.appendChild(newGraphAreaZDiv)
+
+    drawingNewGraphs(plotlyDataTime, plotlyDataPos, idTime, idPos)
+}
+
+const removeGraph = (idDeleteBtn) => {
+    const id = idDeleteBtn
+    const request = new XMLHttpRequest()
+    request.open('POST', '/remove-datum')
+
+    request.onload = () => {
+        if(request.status >=200 && request.status < 400) {
+            // Success!
+            const plotlyDataList = JSON.parse(JSON.parse(request.response))
+
+            const dataTimeVsVarList = plotlyDataList[0]
+            const dataPosVsVarList = plotlyDataList[1]
+
+            if (dataTimeVsVarList.length === dataPosVsVarList.length) {
+                cleanMainGraphField()
+                for (let i=0;i<dataTimeVsVarList.length;i++){
+                    createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
+                }
+            } else {
+                console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
+            }
+        }
+        else {
+            // We reached our target server, but it returned an error
+            console.error('we reached our target server, but it returned an error!')
+        }
+    }
+    request.onerror = () => {
+        // There was a conection error of some sort
+        console.error('There was a conection error of some sort')
+    }
+
+    request.send(id)
+}
+
+const cleanMainGraphField = () => {
+    const graphFieldDiv = document.getElementById('main-graph-field')
+    while (graphFieldDiv.firstChild) graphFieldDiv.removeChild(graphFieldDiv.firstChild)
 }

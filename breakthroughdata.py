@@ -29,7 +29,7 @@ class BreakthroughData():
             )
             time_vs_var_list.append(plotly_obj)
 
-        self.data_time_vs_var.append(time_vs_var_list)        
+        self.data_time_vs_var.append(time_vs_var_list)
     
     def _add_data_pos_vs_var(self, filename, time_array, space_array, main_array):
 
@@ -79,5 +79,9 @@ class BreakthroughData():
 
         json_time_vs_var = json.dumps(use_data, cls=plotly.utils.PlotlyJSONEncoder)
         return json_time_vs_var
+    
+    def remove_datum(self, data_index):
+        self.data_time_vs_var.pop(data_index)
+        self.data_pos_vs_var.pop(data_index)
 
     

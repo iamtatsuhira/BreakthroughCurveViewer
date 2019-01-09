@@ -1,6 +1,4 @@
-import Plotly from 'plotly.js-dist'
-// import {addLegend} from './legend-line'
-import {drawingNewGraphs} from './graph'
+import {createNewGraphDOM} from './graph'
 const maxFileSize = 1 * 1024 * 1024
 const elDrop = document.getElementById('dropzone')
 
@@ -39,36 +37,6 @@ const handleDrop = (files) => {
     upload_to_server(acceptedFileList)
 }
 
-const createNewGraphs = (plotlyDataTime, plotlyDataPos) => {
-    const graphFieldDiv = document.getElementById('main-graph-field')
-    const childElementNum = graphFieldDiv.childElementCount
-    const idTime = 'graph-t-' + (childElementNum + 1)
-    const idPos = 'graph-z-' + (childElementNum + 1)
-
-    const newColumnsDiv = document.createElement('div')
-    newColumnsDiv.classList.add('columns')
-
-    const newColumnTDiv = document.createElement('div')
-    newColumnTDiv.classList.add('column')
-    const newGraphAreaTDiv = document.createElement('div')
-    newGraphAreaTDiv.classList.add('grapharea')
-    newGraphAreaTDiv.setAttribute('id', idTime)
-
-    const newColumnZDiv = document.createElement('div')
-    newColumnZDiv.classList.add('column')
-    const newGraphAreaZDiv = document.createElement('div')
-    newGraphAreaZDiv.classList.add('grapharea')
-    newGraphAreaZDiv.setAttribute('id', idPos)
-
-    graphFieldDiv.appendChild(newColumnsDiv)
-    newColumnsDiv.appendChild(newColumnTDiv)
-    newColumnTDiv.appendChild(newGraphAreaTDiv)
-    newColumnsDiv.appendChild(newColumnZDiv)
-    newColumnZDiv.appendChild(newGraphAreaZDiv)
-
-    drawingNewGraphs(plotlyDataTime, plotlyDataPos, idTime, idPos)  
-}
-
 const checkFileSize = (files) => {
     const acceptedFileList = []
     for (const file of files){
@@ -100,7 +68,7 @@ const checkFileType = (files) => {
 const upload_to_server = (files) => {
     
     const request = new XMLHttpRequest()
-    request.open('POST', '/adddata')
+    request.open('POST', '/add-data')
 
     var fd = new FormData();
     // add files to FormData
@@ -121,7 +89,7 @@ const upload_to_server = (files) => {
 
             if (dataTimeVsVarList.length === dataPosVsVarList.length) {
                 for (let i=0;i<dataTimeVsVarList.length;i++){
-                    createNewGraphs(dataTimeVsVarList[i], dataPosVsVarList[i])
+                    createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
                 }
             } else {
                 console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
