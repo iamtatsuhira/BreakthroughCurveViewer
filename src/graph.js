@@ -1,4 +1,5 @@
 import Plotly from 'plotly.js-dist'
+import {setDeleteAllGraphsBtn} from './navbar'
 
 class Layout {
     constructor() {
@@ -247,6 +248,7 @@ const removeGraph = (idDeleteBtn) => {
                 for (let i=0;i<dataTimeVsVarList.length;i++){
                     createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
                 }
+                setDeleteAllGraphsBtn()
             } else {
                 console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
             }
@@ -267,4 +269,27 @@ const removeGraph = (idDeleteBtn) => {
 const cleanMainGraphField = () => {
     const graphFieldDiv = document.getElementById('main-graph-field')
     while (graphFieldDiv.firstChild) graphFieldDiv.removeChild(graphFieldDiv.firstChild)
+}
+
+export const removeAllGraphs = () => {
+    const request = new XMLHttpRequest()
+    request.open('POST', '/remove-all-data')
+
+    request.onload = () => {
+        if(request.status >=200 && request.status < 400) {
+            // Success!
+            cleanMainGraphField()
+            setDeleteAllGraphsBtn()
+        }
+        else {
+            // We reached our target server, but it returned an error
+            console.error('we reached our target server, but it returned an error!')
+        }
+    }
+    request.onerror = () => {
+        // There was a conection error of some sort
+        console.error('There was a conection error of some sort')
+    }
+
+    request.send(null)
 }

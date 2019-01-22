@@ -1,4 +1,5 @@
 import {createNewGraphDOM} from './graph'
+import {setDeleteAllGraphsBtn} from './navbar'
 const maxFileSize = 1 * 1024 * 1024
 const elDrop = document.getElementById('dropzone')
 
@@ -91,6 +92,7 @@ const upload_to_server = (files) => {
                 for (let i=0;i<dataTimeVsVarList.length;i++){
                     createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
                 }
+                setDeleteAllGraphsBtn()
             } else {
                 console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
             }

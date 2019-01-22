@@ -84,4 +84,15 @@ class BreakthroughData():
         self.data_time_vs_var.pop(data_index)
         self.data_pos_vs_var.pop(data_index)
 
+    def check_is_data_empty(self):
+        is_data_empty = False
+        if len(self.data_pos_vs_var) == 0:
+            is_data_empty = True
+        else:
+            is_data_empty = False
+        return is_data_empty
+    
+    def remove_all_data(self):
+        self.data_time_vs_var = []
+        self.data_pos_vs_var = []
     
