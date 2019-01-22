@@ -1,4 +1,5 @@
 import Plotly from 'plotly.js-dist'
+import {setDeleteAllGraphsBtn} from './navbar'
 
 class Layout {
     constructor() {
@@ -247,6 +248,7 @@ const removeGraph = (idDeleteBtn) => {
                 for (let i=0;i<dataTimeVsVarList.length;i++){
                     createNewGraphDOM(dataTimeVsVarList[i], dataPosVsVarList[i])
                 }
+                setDeleteAllGraphsBtn()
             } else {
                 console.error('横軸timeのグラフと横軸positionのグラフの数が違う（おかしい！）')
             }

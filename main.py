@@ -94,5 +94,11 @@ def remove_datum():
 
     return response
 
+@app.route("/get-is-data-empty", methods=["GET"])
+def return_is_data_empty():
+    is_data_empty = breakthrough_data.check_is_data_empty()
+    response = jsonify(is_data_empty)
+    return response
+
 if __name__ == "__main__":
     app.run(debug=True)
