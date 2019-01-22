@@ -100,5 +100,13 @@ def return_is_data_empty():
     response = jsonify(is_data_empty)
     return response
 
+@app.route("/remove-all-data", methods=["POST"])
+def remove_all_data():
+    breakthrough_data.remove_all_data()
+    response = breakthrough_data.get_json_both_time_pos()
+    response = jsonify(response)
+
+    return response
+
 if __name__ == "__main__":
     app.run(debug=True)

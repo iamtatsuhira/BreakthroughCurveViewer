@@ -1,6 +1,12 @@
+import {removeAllGraphs} from './graph'
 const elDeleteAllGraphsBtn = document.getElementById('delete-all-graphs-btn')
 
 export const setDeleteAllGraphsBtn = () => {
+
+    // set eventListener
+    elDeleteAllGraphsBtn.addEventListener('click', () => {removeAllGraphs()})
+
+    // set active/innactive
     const request = new XMLHttpRequest()
     request.open('GET', '/get-is-data-empty', false) // falseで同期通信
 
@@ -24,12 +30,4 @@ export const setDeleteAllGraphsBtn = () => {
     }
 
     request.send(null)
-}
-
-export const activateDeleteAllGraphsBtn = () => {
-    elDeleteAllGraphsBtn.disabled = false
-}
-
-export const deactivateDeleteAllGraphsBtn = () => {
-    elDeleteAllGraphsBtn.disabled = true
 }

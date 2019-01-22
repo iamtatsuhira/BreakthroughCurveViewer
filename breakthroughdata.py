@@ -91,5 +91,8 @@ class BreakthroughData():
         else:
             is_data_empty = False
         return is_data_empty
-            
+    
+    def remove_all_data(self):
+        self.data_time_vs_var = []
+        self.data_pos_vs_var = []
     
