@@ -22,7 +22,7 @@
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^1.2.1",
     "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "plotly.js-dist": "^1.43.1"
